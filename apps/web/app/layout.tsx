@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   title: 'Fixla — Servis Tempatan Malaysia',
   description: 'Temui Technician berdekatan anda dengan mudah dan cepat.',
   manifest: '/manifest.json',
-  themeColor: '#1D9E75'
+}
+
+export const viewport: Viewport = {
+  themeColor: '#1D9E75',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
