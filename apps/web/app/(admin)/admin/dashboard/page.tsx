@@ -146,20 +146,45 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div style={{background:'linear-gradient(160deg,#060d1f 0%,#0a1e3d 100%)'}} className="px-6 pt-8 pb-20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="Fixla" className="h-9 w-auto" style={{filter:'drop-shadow(0 2px 8px rgba(249,115,22,0.5))'}} />
-            <div>
-              <p className="text-blue-200 text-xs font-semibold tracking-widest uppercase">Admin Panel</p>
-              <h1 className="text-white font-black text-xl">Dashboard</h1>
+      <div style={{background:'linear-gradient(160deg,#060d1f 0%,#0a1e3d 100%)'}} className="px-5 pt-10 pb-20">
+        <div className="max-w-6xl mx-auto">
+
+          {/* Row 1 — branding + actions */}
+          <div className="flex items-center justify-between mb-4">
+            {/* Logo + title */}
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="Fixla" className="h-8 w-auto" style={{filter:'drop-shadow(0 2px 8px rgba(249,115,22,0.5))'}} />
+              <div>
+                <p className="text-[10px] font-bold tracking-widest uppercase text-blue-300 leading-none mb-0.5">Admin Panel</p>
+                <h1 className="text-white font-black text-lg leading-none">Dashboard</h1>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={loadAll}
+                title="Refresh"
+                className="bg-white/10 text-white w-9 h-9 rounded-full border border-white/20 hover:bg-white/25 transition flex items-center justify-center text-base"
+              >🔄</button>
+              <button
+                onClick={()=>{logout();router.push('/login')}}
+                className="bg-red-500/80 hover:bg-red-500 text-white text-xs font-black px-4 py-2 rounded-full transition"
+              >Log Keluar</button>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-blue-200/70 text-sm hidden sm:block">{user?.full_name}</span>
-            <button onClick={loadAll} className="bg-white/15 text-white text-sm w-9 h-9 rounded-full border border-white/20 hover:bg-white/25 transition flex items-center justify-center">🔄</button>
-            <button onClick={()=>{logout();router.push('/login')}} className="bg-white/15 text-white text-sm font-bold px-4 py-2 rounded-full border border-white/20 hover:bg-white/25 transition">Log Keluar</button>
+
+          {/* Row 2 — user info chip */}
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#F97316] flex items-center justify-center text-white text-xs font-black shrink-0">
+              {user?.full_name?.[0]?.toUpperCase() ?? 'A'}
+            </div>
+            <div>
+              <p className="text-white text-sm font-bold leading-none">{user?.full_name}</p>
+              <p className="text-blue-300 text-[10px] font-semibold leading-none mt-0.5">Administrator</p>
+            </div>
           </div>
+
         </div>
       </div>
 
