@@ -419,7 +419,7 @@ export default function ProviderDashboardPage() {
                 {togglingOnline ? 'Menukar...' : profile?.is_online ? 'Anda Online' : 'Anda Offline'}
               </p>
               <p className="text-[11px] text-white/40 mt-0.5 leading-none">
-                {profile?.is_online ? 'Pelanggan boleh jumpa anda' : 'Ketuk untuk pergi online'}
+                {profile?.is_online ? 'Pelanggan boleh cari & hubungi anda' : 'Tekan untuk mula terima tempahan'}
               </p>
             </div>
           </div>

@@ -44,6 +44,10 @@ const STATUS_MAP: Record<string, { label: string; desc: string; color: string; b
 
 const STEPS = ['Hantar', 'Tawaran', 'Terima', 'OTW', 'Proses', 'Siap']
 
+const DISPLAY_NAME: Record<string, string> = {
+  aircond: 'Aircond',
+}
+
 const CATEGORY_STYLE: Record<string, { icon: string; color: string }> = {
   electrical: { icon: '⚡', color: 'bg-yellow-50 border-yellow-200' },
   aircond:    { icon: '❄️', color: 'bg-blue-50 border-blue-200' },
@@ -109,10 +113,11 @@ export default function HomePage() {
 
   // Filter categories based on search
   const filteredCategories = searchQuery.trim()
-    ? categories.filter(c =>
-        c.name_ms.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? categories.filter(c => {
+        const q = searchQuery.toLowerCase()
+        const displayName = (DISPLAY_NAME[c.slug] ?? c.name_ms).toLowerCase()
+        return displayName.includes(q) || c.name_ms.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.slug.includes(q)
+      })
     : categories
 
   const handleSearchKey = (e: React.KeyboardEvent) => {
@@ -198,7 +203,7 @@ export default function HomePage() {
                     onClick={() => setSearchQuery('')}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 transition border-b border-gray-50 last:border-0">
                     <span className="text-xl">{style.icon}</span>
-                    <span className="text-sm font-bold text-gray-700">{cat.name_ms}</span>
+                    <span className="text-sm font-bold text-gray-700">{DISPLAY_NAME[cat.slug] ?? cat.name_ms}</span>
                     <svg className="w-4 h-4 text-gray-300 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -332,7 +337,7 @@ export default function HomePage() {
                   <Link key={cat.slug} href={`/jobs/new?category=${cat.slug}`}
                     className={`${style.color} border-2 rounded-2xl p-3 text-center hover:scale-105 transition-transform active:scale-95`}>
                     <div className="text-2xl mb-1.5">{style.icon}</div>
-                    <p className="text-xs font-bold text-gray-700 leading-tight">{cat.name_ms}</p>
+                    <p className="text-xs font-bold text-gray-700 leading-tight">{DISPLAY_NAME[cat.slug] ?? cat.name_ms}</p>
                   </Link>
                 )
               })}

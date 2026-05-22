@@ -11,14 +11,118 @@ interface Category {
   subcategories: { id: string; name_ms: string }[]
 }
 
+// ── Override nama kategori untuk display ──────────────────────
+const DISPLAY_NAME: Record<string, string> = {
+  aircond: 'Aircond',
+}
+
 // ── Preset masalah ikut kategori ──────────────────────────────
 const PRESETS: Record<string, string[]> = {
-  aircond:    ['Tak sejuk', 'Air menitis / bocor', 'Bunyi bising', 'Tak nak on', 'Nak service / cuci', 'Bau busuk'],
-  electrical: ['Trip / blackout', 'Lampu tak menyala', 'Soket rosak / terbakar', 'Kipas tak berpusing', 'Pasang lampu / kipas baru', 'Wayar terdedah'],
-  plumbing:   ['Paip bocor', 'Tandas tersumbat', 'Sinki air lambat', 'Shower / paip rosak', 'Paip pecah', 'Flush tak jalan'],
-  appliance:  ['Peti sejuk tak sejuk', 'Mesin basuh tak pusing', 'TV rosak', 'Water heater problem', 'Microwave tak panas', 'Oven rosak'],
-  'it-tech':  ['WiFi lambat / tak connect', 'Laptop / PC rosak', 'Kena virus / malware', 'Setup router / network', 'Data recovery', 'Printer rosak'],
-  handyman:   ['Pasang TV wall mount', 'Pintu / tingkap tak boleh tutup', 'Tukar kunci / tambah kunci', 'Repair dinding / plaster', 'Pasang perabot', 'Tangga / railing goyang'],
+  aircond: [
+    'Tak sejuk / kurang sejuk',
+    'Air menitis / bocor dari unit',
+    'Bunyi bising / pelik',
+    'Tak nak on / mati sendiri',
+    'Nak service / cuci aircond',
+    'Bau busuk / hapak',
+    'Gas habis / perlu tambah gas',
+    'Remote rosak / tak berfungsi',
+    'Terlalu sejuk / suhu tak stabil',
+    'Unit luar (compressor) rosak',
+    'Lampu / panel error',
+    'Aircond baru — nak pasang',
+    'Nak tambah unit baru',
+    'Paip saliran tersumbat',
+  ],
+  electrical: [
+    'Trip / blackout tiba-tiba',
+    'Lampu tak menyala',
+    'Soket rosak / terbakar',
+    'Kipas tak berpusing / slow',
+    'Pasang lampu / kipas baru',
+    'Wayar terdedah / berbahaya',
+    'MCB selalu trip',
+    'Pasang soket / point baru',
+    'Pasang water heater elektrik',
+    'Pasang CCTV / alarm',
+    'Lampu outdoor / taman rosak',
+    'Wayar short circuit',
+    'Tukar fuse box / distribution board',
+    'Pasang smart switch / dimmer',
+    'Rumah baru — wiring lengkap',
+  ],
+  plumbing: [
+    'Paip bocor / menitik',
+    'Tandas tersumbat',
+    'Sinki / longkang air lambat',
+    'Shower / paip rosak',
+    'Paip pecah / burst',
+    'Flush tak jalan',
+    'Tekanan air rendah',
+    'Tangki air kotor / perlu cuci',
+    'Pam air rosak',
+    'Water heater bocor / rosak',
+    'Longkang berbau',
+    'Tukar faucet / shower head',
+    'Mesin basuh — paip bocor',
+    'Banjir dalam rumah',
+    'Bina sinki / tandas baru',
+  ],
+  appliance: [
+    'Peti sejuk tak sejuk',
+    'Peti sejuk bunyi pelik / berbau',
+    'Peti sejuk beku — perlu defrost',
+    'Mesin basuh tak pusing / tak start',
+    'Mesin basuh bunyi kuat / goyang',
+    'Dryer tak panas / tak kering',
+    'TV rosak / tiada gambar',
+    'Water heater tak panas',
+    'Microwave tak panas / mati',
+    'Oven tak berfungsi',
+    'Dishwasher rosak',
+    'Rice cooker rosak',
+    'Vacuum cleaner rosak / lemah',
+    'Air purifier / air diffuser rosak',
+    'Penghisap asap dapur rosak',
+  ],
+  'it-tech': [
+    'WiFi lambat / tak connect',
+    'Laptop / PC rosak',
+    'Laptop slow / hang / freeze',
+    'Kena virus / malware / hacked',
+    'Setup router / extend WiFi',
+    'Data recovery — fail hilang',
+    'Printer rosak / tak detect',
+    'Hard disk penuh / rosak',
+    'Screen laptop / monitor pecah',
+    'Keyboard / touchpad rosak',
+    'Pasang OS baru (Windows / Mac)',
+    'Setup NAS / home server',
+    'Pasang & setup CCTV IP',
+    'Smart home setup (Alexa / Google)',
+    'Gaming console rosak',
+    'Projector setup / rosak',
+  ],
+  handyman: [
+    'Pasang TV wall mount',
+    'Pintu / tingkap tak boleh tutup',
+    'Tukar kunci / tambah kunci',
+    'Repair dinding / tampal plaster',
+    'Pasang / assemble perabot',
+    'Tangga / railing goyang',
+    'Cat dinding / ceiling',
+    'Repair jubin / tiles pecah',
+    'Pasang curtain rail / blinds',
+    'Pasang cermin / mirror besar',
+    'Repair bumbung bocor',
+    'Pasang pagar / gate',
+    'Silicone / grouting tandas rosak',
+    'Waterproofing bilik air / balkoni',
+    'Pasang shower screen / glass panel',
+    'Repair decking / lantai kayu',
+    'Pasang partition / drywall',
+    'Pasang lampu hiasan / corniche',
+  ],
 }
 
 const CATEGORY_ICON: Record<string, string> = {
@@ -290,7 +394,7 @@ function PostJobPage() {
                           ${selected ? 'border-[#1565C0] bg-blue-50' : 'border-slate-100 bg-slate-50 hover:border-slate-200'}`}>
                         <span className="text-xl">{CATEGORY_ICON[cat.slug] || '🔨'}</span>
                         <span className={`text-xs font-black flex-1 leading-tight ${selected ? 'text-[#1565C0]' : 'text-gray-700'}`}>
-                          {cat.name_ms}
+                          {DISPLAY_NAME[cat.slug] ?? cat.name_ms}
                         </span>
                         {selected && <span className="text-[#1565C0] text-xs">✓</span>}
                       </button>
