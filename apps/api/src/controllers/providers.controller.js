@@ -74,13 +74,13 @@ const getNearby = async (req, res, next) => {
     if (!lat || !lng) return error(res, 'VALIDATION_ERROR', 'lat dan lng diperlukan', 422)
     const offset = (page - 1) * limit
     const { rows } = await pool.query(
-      `SELECT pp.id, pp.business_name, pp.rating_avg, pp.total_reviews, pp.is_online, pp.is_featured,
+      `SELECT pp.id, pp.business_name, pp.rating_avg, pp.total_reviews, pp.is_online, pp.is_featured, pp.verification_status,
               u.avatar_url,
               (6371 * acos(cos(radians($1)) * cos(radians(pp.base_lat)) *
                cos(radians(pp.base_lng) - radians($2)) + sin(radians($1)) * sin(radians(pp.base_lat)))) AS distance_km
        FROM provider_profiles pp
        JOIN users u ON pp.user_id = u.id
-       WHERE pp.verification_status = 'verified' AND pp.is_online = true
+       WHERE pp.verification_status IN ('verified', 'pending') AND pp.is_online = true
          AND pp.base_lat IS NOT NULL AND pp.base_lng IS NOT NULL
          AND (6371 * acos(cos(radians($1)) * cos(radians(pp.base_lat)) *
               cos(radians(pp.base_lng) - radians($2)) + sin(radians($1)) * sin(radians(pp.base_lat)))) <= $3

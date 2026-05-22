@@ -29,6 +29,7 @@ interface NearbyProvider {
   is_online: boolean
   distance_km: number
   avatar_url?: string
+  verification_status?: string
 }
 
 const STATUS_MAP: Record<string, { label: string; desc: string; color: string; bg: string; border: string; icon: string; step: number }> = {
@@ -426,7 +427,12 @@ export default function HomePage() {
                     {p.business_name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-black text-gray-800 truncate">{p.business_name}</p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-sm font-black text-gray-800 truncate">{p.business_name}</p>
+                      {p.verification_status === 'pending' && (
+                        <span className="text-[10px] font-bold bg-yellow-50 text-yellow-600 border border-yellow-200 px-1.5 py-0.5 rounded-full shrink-0">Belum Disahkan</span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs text-gray-400">
                         ⭐ {p.rating_avg > 0 ? Number(p.rating_avg).toFixed(1) : 'Baru'}

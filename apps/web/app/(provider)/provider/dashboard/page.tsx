@@ -105,6 +105,7 @@ export default function ProviderDashboardPage() {
   const [selectedRadius, setSelectedRadius] = useState(30)
   const [savingLoc, setSavingLoc] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [togglingOnline, setTogglingOnline] = useState(false)
 
   const pushToast = (t: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).slice(2)
@@ -337,6 +338,17 @@ export default function ProviderDashboardPage() {
     </div>
   )
 
+  const toggleOnline = async () => {
+    if (!profile || togglingOnline) return
+    setTogglingOnline(true)
+    const next = !profile.is_online
+    try {
+      await api.patch('/api/providers/status', { is_online: next })
+      setProfile(prev => prev ? { ...prev, is_online: next } : prev)
+    } catch { /* non-critical */ }
+    finally { setTogglingOnline(false) }
+  }
+
   const activeJobs  = assignments.filter(j => j.status !== 'completed')
   const doneJobs    = assignments.filter(j => j.status === 'completed').slice(0, 3)
 
@@ -366,31 +378,63 @@ export default function ProviderDashboardPage() {
       </div>
 
       {/* Header */}
-      <div style={{ background: 'linear-gradient(160deg,#060d1f 0%,#0a1e3d 100%)' }} className="px-5 pt-12 pb-20">
-        <div className="flex items-center justify-between mb-2">
+      <div style={{ background: 'linear-gradient(160deg,#060d1f 0%,#0a1e3d 100%)' }} className="px-5 pt-10 pb-20">
+
+        {/* Row 1 — branding + icon actions */}
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-blue-200 text-xs font-semibold tracking-widest uppercase mb-1">Dashboard Technician</p>
-            <p className="text-white font-black text-lg">{user?.full_name || 'Technician'}</p>
-            {profile?.base_address && <p className="text-blue-200/70 text-xs mt-0.5">📍 {profile.base_address}</p>}
+            <p className="text-blue-300 text-[10px] font-bold tracking-widest uppercase leading-none mb-0.5">Dashboard Technician</p>
+            <p className="text-white font-black text-lg leading-tight">{user?.full_name || 'Technician'}</p>
+            {profile?.base_address && <p className="text-blue-200/60 text-xs mt-0.5 truncate max-w-[200px]">📍 {profile.base_address}</p>}
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => router.push('/provider/settings')} className="bg-white/15 backdrop-blur text-white w-9 h-9 rounded-full border border-white/20 hover:bg-white/25 transition flex items-center justify-center">
+            <button onClick={() => router.push('/provider/settings')}
+              className="bg-white/10 text-white w-9 h-9 rounded-full border border-white/20 hover:bg-white/25 transition flex items-center justify-center">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </button>
-            <button onClick={handleLogout} className="bg-white/15 backdrop-blur text-white text-xs font-bold px-4 py-2 rounded-full border border-white/20 hover:bg-white/25 transition">
+            <button onClick={handleLogout}
+              className="bg-red-500/80 hover:bg-red-500 text-white text-xs font-black px-4 py-2 rounded-full transition">
               Log Keluar
             </button>
           </div>
         </div>
+
+        {/* Row 2 — Online/Offline toggle (prominent) */}
+        <button
+          onClick={toggleOnline}
+          disabled={togglingOnline}
+          className={`w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border-2 transition ${
+            profile?.is_online
+              ? 'bg-green-500/20 border-green-400/50 hover:bg-green-500/30'
+              : 'bg-white/8 border-white/20 hover:bg-white/15'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div className={`w-3 h-3 rounded-full shrink-0 ${profile?.is_online ? 'bg-green-400 shadow-[0_0_8px_2px_rgba(74,222,128,0.6)]' : 'bg-gray-500'} ${togglingOnline ? 'animate-pulse' : ''}`} />
+            <div className="text-left">
+              <p className={`text-sm font-black leading-none ${profile?.is_online ? 'text-green-300' : 'text-gray-400'}`}>
+                {togglingOnline ? 'Menukar...' : profile?.is_online ? 'Anda Online' : 'Anda Offline'}
+              </p>
+              <p className="text-[11px] text-white/40 mt-0.5 leading-none">
+                {profile?.is_online ? 'Pelanggan boleh jumpa anda' : 'Ketuk untuk pergi online'}
+              </p>
+            </div>
+          </div>
+          {/* Toggle pill */}
+          <div className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${profile?.is_online ? 'bg-green-500' : 'bg-gray-600'}`}>
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200 ${profile?.is_online ? 'left-6' : 'left-0.5'}`} />
+          </div>
+        </button>
+
         {profile?.verification_status === 'pending' && (
-          <div className="mt-4 bg-orange-500/20 border border-orange-400/30 rounded-2xl px-4 py-3 flex items-center gap-3">
-            <span className="text-orange-300 text-xl">⏳</span>
+          <div className="mt-3 bg-orange-500/20 border border-orange-400/30 rounded-2xl px-4 py-3 flex items-center gap-3">
+            <span className="text-orange-300 text-lg">⏳</span>
             <div>
               <p className="text-orange-200 text-xs font-black">Akaun Dalam Semakan</p>
-              <p className="text-orange-200/70 text-xs">Admin akan sahkan dalam masa 24-48 jam</p>
+              <p className="text-orange-200/70 text-[11px]">Admin akan sahkan dalam masa 24-48 jam</p>
             </div>
           </div>
         )}
