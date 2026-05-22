@@ -1,0 +1,10 @@
+{
+  "name": "fixla-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:api": "cd apps/api && npm run dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "install:all": "cd apps/api && npm install && cd ../web && npm install"
+  }
+}
