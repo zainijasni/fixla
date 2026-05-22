@@ -1,5 +1,5 @@
 ﻿'use client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuthStore } from '@/store/auth.store'
 import api from '@/lib/api'
@@ -69,7 +69,7 @@ const StepBar = ({ current }: { current: number }) => (
   </div>
 )
 
-export default function PostJobPage() {
+function PostJobPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user } = useAuthStore()
@@ -521,5 +521,13 @@ export default function PostJobPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function PostJobPageWrapper() {
+  return (
+    <Suspense>
+      <PostJobPage />
+    </Suspense>
   )
 }

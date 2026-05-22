@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, Suspense } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/auth.store'
@@ -59,7 +59,7 @@ const STATUS_MAP: Record<string, { label: string; color: string; bg: string; ico
 const PROGRESS_STEPS = ['open', 'bidding', 'assigned', 'otw', 'in_progress', 'completed']
 const STEP_LABELS = ['Hantar', 'Tawaran', 'Terima', 'OTW', 'Proses', 'Siap']
 
-export default function JobDetailPage() {
+function JobDetailPage() {
   const params = useParams()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -392,6 +392,14 @@ export default function JobDetailPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function JobDetailPageWrapper() {
+  return (
+    <Suspense>
+      <JobDetailPage />
+    </Suspense>
   )
 }
 
